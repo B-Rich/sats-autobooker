@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import urllib, urllib2, cookielib, json, codecs
+import urllib, urllib2, cookielib, json, codecs, sys
 from datetime import datetime
 from sets import Set
 
@@ -102,6 +102,10 @@ def book_matching_classes(search_results, classes):
 				book_class(opener, cl)
 
 def main():
+	# enable safer printing
+	UTF8Writer = codecs.getwriter('utf8')
+	sys.stdout = UTF8Writer(sys.stdout)
+
 	(email, password, classes) = readconfig('sats.config')
 
 	cookie_jar = cookielib.CookieJar()

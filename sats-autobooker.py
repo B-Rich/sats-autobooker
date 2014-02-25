@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import urllib, urllib2, cookielib, json, codecs, sys
+import urllib, urllib2, cookielib, json, codecs, sys, os
 from datetime import datetime
 from sets import Set
 
@@ -93,7 +93,7 @@ def load_list_of_centers(opener):
 	resp = opener.open('https://www.sats.se/api/sv-SE/booking/init/init?apiver=2')
 	return json.load(resp)['Centers']
 
-def book_matching_classes(search_results, classes):
+def book_matching_classes(opener, search_results, classes):
 	for cl in search_results[0]['Classes']:
 		if class_in_class_list(cl, classes):
 			if cl['Booked']:
@@ -106,7 +106,8 @@ def main():
 	UTF8Writer = codecs.getwriter('utf8')
 	sys.stdout = UTF8Writer(sys.stdout)
 
-	(email, password, classes) = readconfig('sats.config')
+	config_path = os.path.join(os.path.dirname(__file__), './sats.config');
+	(email, password, classes) = readconfig(config_path)
 
 	cookie_jar = cookielib.CookieJar()
 	opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie_jar))
@@ -117,6 +118,6 @@ def main():
 
 	search_results = search_for_classes(opener, centers, classes)
 
-	book_matching_classes(search_results, classes)
+	book_matching_classes(opener, search_results, classes)
 
 main()
